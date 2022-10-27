@@ -2,21 +2,21 @@
 
 namespace App\Entity;
 
-use App\Repository\ImageRepository;
+use App\Repository\ImgRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ImageRepository::class)]
-class Image
+#[ORM\Entity(repositoryClass: ImgRepository::class)]
+class Img
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
-    #[ORM\ManyToOne(inversedBy: 'image')]
+    #[ORM\ManyToOne(inversedBy: 'img')]
     private ?Article $article = null;
 
     public function getId(): ?int
@@ -29,7 +29,7 @@ class Image
         return $this->url;
     }
 
-    public function setUrl(string $url): self
+    public function setUrl(?string $url): self
     {
         $this->url = $url;
 
@@ -46,5 +46,9 @@ class Image
         $this->article = $article;
 
         return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->getArticle();
     }
 }

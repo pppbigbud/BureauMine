@@ -7,8 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
+#[Vich\Uploadable]
+
 class Article
 {
     #[ORM\Id]
@@ -22,18 +27,69 @@ class Article
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Image::class)]
-    private Collection $image;
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Img::class)]
+    private Collection $img;
+
+    #[Vich\UploadableField(mapping: 'article', fileNameProperty: 'image_name')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(type: 'string')]
+    private ?string $imageName = null;
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
+     */
+    public function setImageFile(?File $imageFile = null): Article
+    {
+        $this->imageFile = $imageFile;
+
+//        if (null !== $imageFile) {
+//            // It is required that at least one field changes if you are using doctrine
+//            // otherwise the event listeners won't be called and the file is lost
+//            $this->updatedAt = new \DateTimeImmutable();
+//        }
+
+        if ($this->imageFile instanceof UploadedFile) {
+            $this->updatedAt = new \DateTimeImmutable('now');
+        }
+
+        return $this;
+
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
 
     public function __construct()
     {
-        $this->image = new ArrayCollection();
+        $this->img = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -65,12 +121,12 @@ class Article
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -90,32 +146,33 @@ class Article
     }
 
     /**
-     * @return Collection<int, Image>
+     * @return Collection<int, Img>
      */
-    public function getImage(): Collection
+    public function getImg(): Collection
     {
-        return $this->image;
+        return $this->img;
     }
 
-    public function addImage(Image $image): self
+    public function addImg(Img $img): self
     {
-        if (!$this->image->contains($image)) {
-            $this->image->add($image);
-            $image->setArticle($this);
+        if (!$this->img->contains($img)) {
+            $this->img->add($img);
+            $img->setArticle($this);
         }
 
         return $this;
     }
 
-    public function removeImage(Image $image): self
+    public function removeImg(Img $img): self
     {
-        if ($this->image->removeElement($image)) {
+        if ($this->img->removeElement($img)) {
             // set the owning side to null (unless already changed)
-            if ($image->getArticle() === $this) {
-                $image->setArticle(null);
+            if ($img->getArticle() === $this) {
+                $img->setArticle(null);
             }
         }
 
         return $this;
     }
+
 }
