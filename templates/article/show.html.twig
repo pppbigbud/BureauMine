@@ -16,20 +16,20 @@
                 <td>{{ article.title }}</td>
             </tr>
             <tr>
+                <th>ImageName</th>
+                <td>{{ article.imageName }}</td>
+            </tr>
+            <tr>
                 <th>Description</th>
                 <td>{{ article.description }}</td>
             </tr>
             <tr>
                 <th>CreatedAt</th>
-                <td>{{ article.createdAt ? article.createdAt|date('Y-m-d') : '' }}</td>
+                <td>{{ article.createdAt ? article.createdAt|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>UpdatedAt</th>
                 <td>{{ article.updatedAt ? article.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>ImageName</th>
-                <td>{{ article.imageName }}</td>
             </tr>
         </tbody>
     </table>

@@ -36,7 +36,7 @@ class Article
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Img::class)]
     private Collection $img;
 
-    #[Vich\UploadableField(mapping: 'article', fileNameProperty: 'image_name')]
+    #[Vich\UploadableField(mapping: 'article_images', fileNameProperty: 'image_name')]
     private ?File $imageFile = null;
 
     #[ORM\Column(type: 'string')]

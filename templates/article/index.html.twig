@@ -10,10 +10,10 @@
             <tr>
                 <th>Id</th>
                 <th>Title</th>
+                <th>ImageName</th>
                 <th>Description</th>
                 <th>CreatedAt</th>
                 <th>UpdatedAt</th>
-                <th>ImageName</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,10 +22,10 @@
             <tr>
                 <td>{{ article.id }}</td>
                 <td>{{ article.title }}</td>
-                <td>{{ article.description }}</td>
-                <td>{{ article.createdAt ? article.createdAt|date('Y-m-d') : '' }}</td>
-                <td>{{ article.updatedAt ? article.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ article.imageName }}</td>
+                <td>{{ article.description }}</td>
+                <td>{{ article.createdAt ? article.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ article.updatedAt ? article.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('app_article_show', {'id': article.id}) }}">show</a>
                     <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
